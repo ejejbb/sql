@@ -448,3 +448,52 @@ WITH cte1 AS (...),
      cte2 AS (...)
 SELECT ...
 ```
+
+## 문제1: 많이 주문한 테이블 찾기
+> subquery
+
+### 요구사항
+식사 금액이 테이블 당 평균 식사 금액보다 더 많은 경우를 모두 출력하는 쿼리를 작성해주세요. 결과에는 tips 테이블에 있는 모든 컬럼이 포함되어야 합니다.
+
+### 작성한 쿼리
+```sql
+SELECT *
+FROM tips
+WHERE total_bill >
+  (SELECT AVG(total_bill)
+  FROM tips)
+```
+![문제1](/image/image.png)
+
+## 문제2: 레스토랑의 대목
+> subquery
+
+### 요구사항
+요일별 매출액 합계를 구하고, 매출이 1500 달러 이상인 요일의 결제 내역을 모두 출력하는 쿼리를 작성해주세요. 쿼리 결과에는 tips 테이블에 있는 모든 컬럼이 포함되어야 합니다.
+
+### 작성한 쿼리
+조건에 해당하는 결제 내역을 **모두 출력**하기 위해서는 서브쿼리를 사용해야 한다.
+```sql
+SELECT *
+FROM tips
+WHERE day IN (
+  SELECT day
+  FROM tips
+  GROUP BY day
+  HAVING SUM(total_bill) > 1500
+)
+```
+![문제2](/image/image2.png)
+
+
+## 문제3: 오랜 기간 보호한 동물(2)
+> WITH
+
+### 요구사항
+입양을 간 동물 중, 보호 기간이 가장 길었던 동물 두 마리의 아이디와 이름을 조회하는 SQL문을 작성해주세요. 이때 결과는 보호 기간이 긴 순으로 조회해야 합니다.
+
+### 작성한 쿼리
+```sql
+
+```
+![문제3](/image/image3.png)
