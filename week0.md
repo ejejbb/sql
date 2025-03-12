@@ -488,14 +488,56 @@ WHERE day IN (
 ![문제2](/image/image2.png)
 
 
-## 문제3: 부모의 형질을 모두 가지는 대장균 찾기
-> WITH
+## 문제3: 식품분류별 가장 비싼 식품의 정보 조회하기
+> subquery or WITH
 
 ### 요구사항
-부모의 형질을 모두 보유한 대장균의 ID(ID), 대장균의 형질(GENOTYPE), 부모 대장균의 형질(PARENT_GENOTYPE)을 출력하는 SQL 문을 작성해주세요. 이때 결과는 ID에 대해 오름차순 정렬해주세요.
+FOOD_PRODUCT 테이블에서 식품분류별로 가격이 제일 비싼 식품의 분류, 가격, 이름을 조회하는 SQL문을 작성해주세요. 이때 식품분류가 '과자', '국', '김치', '식용유'인 경우만 출력시켜 주시고 결과는 식품 가격을 기준으로 내림차순 정렬해주세요.
 
-### 작성한 쿼리
+### 작성한 쿼리(subquery)
+IN 절 안에 서브쿼리 사용
+
 ```sql
-
+SELECT
+    CATEGORY,
+    PRICE AS MAX_PRICE,
+    PRODUCT_NAME
+FROM FOOD_PRODUCT
+WHERE (CATEGORY, PRICE)
+    IN (
+        SELECT
+            CATEGORY,
+            MAX(PRICE)
+        FROM FOOD_PRODUCT
+        GROUP BY CATEGORY
+    )
+    AND CATEGORY IN ('과자', '국', '김치', '식용유')
+GROUP BY CATEGORY
+ORDER BY
+    PRICE DESC;
 ```
+
+### 작성한 쿼리(WITH)
+가독성 향상
+
+```sql
+WITH CTE AS (
+    SELECT
+        CATEGORY,
+        MAX(PRICE) AS MAX_PRICE
+    FROM FOOD_PRODUCT
+    GROUP BY CATEGORY
+)
+SELECT
+    F.CATEGORY,
+    F.PRICE AS MAX_PRICE,
+    F.PRODUCT_NAME
+FROM FOOD_PRODUCT F
+JOIN CTE
+    ON F.CATEGORY = CTE.CATEGORY
+    AND F.PRICE = CTE.MAX_PRICE
+WHERE F.CATEGORY IN ('과자', '국', '김치', '식용유')
+ORDER BY F.PRICE DESC;
+```
+
 ![문제3](/image/image3.png)
