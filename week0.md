@@ -462,8 +462,7 @@ SELECT ...
 SELECT *
 FROM tips
 WHERE total_bill >
-  (SELECT AVG(total_bill)
-  FROM tips)
+  (SELECT AVG(total_bill) FROM tips)
 ```
 ![문제1](/image/image.png)
 
