@@ -512,8 +512,7 @@ WHERE (CATEGORY, PRICE)
     )
     AND CATEGORY IN ('과자', '국', '김치', '식용유')
 GROUP BY CATEGORY
-ORDER BY
-    PRICE DESC;
+ORDER BY PRICE DESC;
 ```
 
 ### 작성한 쿼리(WITH)
