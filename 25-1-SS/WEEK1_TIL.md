@@ -333,7 +333,7 @@ FROM Scores;
 당일의 미세먼지 농도보다 바로 다음날의 미세먼지 농도가 더 안좋은 날을 찾아주세요.
 
 ### 작성한 쿼리
-- Nonaggregate window function always requires an OVER() clause.
+- *OVER clause* is mandatory for nonaggregate window function.
 - Cannot use window functions directly in the WHERE clause.
 → Window functions create values in the SELECT clause, and you need to wrap them in a **subquery or a CTE (Common Table Expression)** to filter them.
 ```sql
