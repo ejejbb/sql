@@ -317,7 +317,7 @@ Write a solution to find the rank of the scores. The ranking should be calculate
 Return the result table ordered by score in descending order.
 
 ### 작성한 쿼리
-MYSQL에서 `RANK`는 예약어이기 때문에 예약어를 별칭으로 쓰려면 백틱()으로 감싸야 한다.
+MYSQL에서 `RANK`는 예약어이기 때문에 예약어를 별칭으로 쓰려면 백틱으로 감싸야 한다.
 ```sql
 SELECT
     score,
