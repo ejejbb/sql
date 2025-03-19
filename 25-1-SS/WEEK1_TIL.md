@@ -368,3 +368,36 @@ FROM CTE
 WHERE pm10 < next_pm10;
 ```
 ![문제2](/image/image5.png)
+
+
+## 문제3: 그룹별 조건에 맞는 식당 목록 출력하기
+> window function: COUNT()+over_clause, RANK()
+
+### 요구사항
+MEMBER_PROFILE와 REST_REVIEW 테이블에서 리뷰를 가장 많이 작성한 회원의 리뷰들을 조회하는 SQL문을 작성해주세요. 회원 이름, 리뷰 텍스트, 리뷰 작성일이 출력되도록 작성해주시고, 결과는 리뷰 작성일을 기준으로 오름차순, 리뷰 작성일이 같다면 리뷰 텍스트를 기준으로 오름차순 정렬해주세요.
+
+### 작성한 쿼리
+```SQL
+WITH RR AS (
+    SELECT
+        *,
+        RANK() OVER (ORDER BY CNT DESC) AS RK
+    FROM (
+        SELECT
+            MEMBER_ID,
+            REVIEW_TEXT,
+            REVIEW_DATE,
+            COUNT(*) OVER (PARTITION BY MEMBER_ID) AS CNT
+        FROM REST_REVIEW) AS R
+    )
+
+SELECT
+    MEMBER_NAME,
+    REVIEW_TEXT,
+    DATE_FORMAT(REVIEW_DATE, '%Y-%m-%d') AS REVIEW_DATE
+FROM MEMBER_PROFILE AS M
+JOIN RR
+USING (MEMBER_ID)
+WHERE RK=1
+ORDER BY REVIEW_DATE, REVIEW_TEXT;
+```
