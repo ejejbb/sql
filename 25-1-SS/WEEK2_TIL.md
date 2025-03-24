@@ -32,19 +32,30 @@ PARTITION BY RANGE (year) (
 ```
 The data is physically divided into three partitions: `p2022`, `p2023`, and `p2024`. When you run the query `WHERE year = 2023`, MySQL automatically knows from the partition metadata that it only needs to access p2023. Other partitions are completely ignored. This optimization is called **Partition Pruning**.
 
--- can reference multiple tables
--- FROM table1, table2
--- but using JOIN is recommendable
-
 ```SQL
 table_factor: {
-    tbl_name [PARTITION (partition_names)] -- 특정 파티션만 조회
+    tbl_name [PARTITION (partition_names)]
         [[AS] alias] [index_hint_list]
   | [LATERAL] table_subquery [AS] alias [(col_list)] -- 서브쿼리에서 외부 테이블 값 참조 가능
   | ( table_references )
 }
 ```
 
+In standard SQL, you can only place a **single table** inside parentheses. However, MYSQL allows multiple table inside parentheses.
+```sql
+SELECT * FROM t1 LEFT JOIN (t2, t3, t4)
+ON (t2.a = t1.a AND t3.b = t1.b AND t4.c = t1.c);
+```
+The comma behaves like a **CROSS JOIN** in MYSQL.
+```
+(t2, t3, t4)
+== (t2 CROSS JOIN t3 CROSS JOIN t4)
+```
+
+
+-- can reference multiple tables
+-- FROM table1, table2
+-- but using JOIN is recommendable
 -- 외부쿼리 참조 예시
 -- SELECT * FROM customers c,
 -- LATERAL (SELECT * FROM orders o WHERE o.customer_id = c.id) AS sub;
