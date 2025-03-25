@@ -245,3 +245,64 @@ HAVING col2 = 2;
 -- it's unclear whether `col2` in `HAVING` refers to the alias in `SELECT` or the grouped column
 -- MySQL prefers `GROUP BY` column
 ```
+
+# 문제 풀이하기
+
+## 문제1: 저자 별 카테고리 별 매출액 집계하기
+> JOIN, GROUP BY
+
+### 요구사항
+2022년 1월의 도서 판매 데이터를 기준으로 저자 별, 카테고리 별 매출액(TOTAL_SALES = 판매량 * 판매가) 을 구하여, 저자 ID(AUTHOR_ID), 저자명(AUTHOR_NAME), 카테고리(CATEGORY), 매출액(SALES) 리스트를 출력하는 SQL문을 작성해주세요.
+결과는 저자 ID를 오름차순으로, 저자 ID가 같다면 카테고리를 내림차순 정렬해주세요.
+
+### 작성한 쿼리
+```SQL
+SELECT
+    AUTHOR_ID,
+    AUTHOR_NAME,
+    CATEGORY,
+    SUM(SALES * PRICE) AS TOTAL_SALES
+FROM BOOK AS B
+JOIN AUTHOR AS A
+USING (AUTHOR_ID)
+JOIN BOOK_SALES AS S
+USING (BOOK_ID)
+WHERE SALES_DATE LIKE '2022-01-%'
+GROUP BY A.AUTHOR_ID, CATEGORY
+ORDER BY
+    A.AUTHOR_ID,
+    CATEGORY DESC;
+```
+
+## 문제2: 언어별 개발자 분류하기
+> JOIN, GROUP BY
+
+### 요구사항
+DEVELOPERS 테이블에서 GRADE별 개발자의 정보를 조회하려 합니다. GRADE는 다음과 같이 정해집니다. A : Front End 스킬과 Python 스킬을 함께 가지고 있는 개발자 B : C# 스킬을 가진 개발자 C : 그 외의 Front End 개발자 GRADE가 존재하는 개발자의 GRADE, ID, EMAIL을 조회하는 SQL 문을 작성해 주세요. 결과는 GRADE와 ID를 기준으로 오름차순 정렬해 주세요.
+
+### 작성한 쿼리
+```SQL
+WITH A AS (
+    SELECT
+        ID,
+        EMAIL,
+        GROUP_CONCAT(S.NAME) AS NAME,
+        GROUP_CONCAT(S.CATEGORY) AS CATEGORY
+    FROM DEVELOPERS AS D
+    JOIN SKILLCODES AS S
+    ON (D.SKILL_CODE & S.CODE) = S.CODE
+    GROUP BY D.ID, D.EMAIL
+)
+SELECT
+    CASE
+        WHEN (CATEGORY LIKE '%Front End%') AND (NAME LIKE '%Python%') THEN 'A'
+        WHEN (NAME LIKE '%C#%') THEN 'B'
+        WHEN (CATEGORY LIKE '%Front End%') THEN 'C'
+        ELSE 'OTHER'
+    END AS GRADE,
+    ID,
+    EMAIL
+FROM A
+HAVING GRADE != 'OTHER'
+ORDER BY GRADE, ID;
+```
