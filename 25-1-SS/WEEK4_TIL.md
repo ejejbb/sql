@@ -269,3 +269,116 @@ Result
 
 ## 14.19.1 Aggregate Function Descriptions
 > GROUP_CONCAT(expr)
+
+### Concept
+ `GROUP_CONCAT(expr)` returns a string result with the concatenated non-NULL values from a group. It returns NULL if there are no non-NULL values. The full **syntax** is as follows:
+
+```sql
+GROUP_CONCAT([DISTINCT] expr [,expr ...]
+             [ORDER BY {unsigned_integer | col_name | expr}
+                 [ASC | DESC] [,col_name ...]]
+             [SEPARATOR str_val]) -- default: (,)
+```
+
+# 문제 풀이하기
+
+## 문제1: 우유와 요거트가 담긴 장바구니
+> GROUP_CONCAT()
+
+### 요구사항
+우유와 요거트를 동시에 구입한 장바구니의 아이디를 조회하는 SQL 문을 작성해주세요. 이때 결과는 장바구니의 아이디 순으로 나와야 합니다.
+
+### 작성한 쿼리1
+LIKE를 사용했기 때문에 만일 Milkshake와 같은 음식이 있다면 정확히 필터링 할 수 없다.
+```sql
+WITH MY AS (
+    SELECT
+        CART_ID,
+        GROUP_CONCAT(NAME) AS NAME
+    FROM CART_PRODUCTS
+    GROUP BY CART_ID)
+
+SELECT CART_ID
+FROM MY
+WHERE NAME LIKE '%Milk%'
+    AND NAME LIKE '%Yogurt%'
+ORDER BY CART_ID;
+```
+
+### 작성한 쿼리2: 쿼리1 보완(1)
+```sql
+WITH MY AS (
+    SELECT
+        CART_ID,
+        CONCAT(',', GROUP_CONCAT(NAME), ',') AS NAME -- NAME 앞뒤로 쉼표로 구분해주면 LIKE를 사용하여 정확히 필터링 가능.
+    FROM CART_PRODUCTS
+    GROUP BY CART_ID)
+
+SELECT CART_ID
+FROM MY
+WHERE NAME REGEXP ',Milk,'
+  AND NAME REGEXP ',Yogurt,'
+ORDER BY CART_ID;
+```
+
+### 작성한 쿼리3: 성능 좋은 쿼리(1)
+```sql
+SELECT CART_ID
+FROM CART_PRODUCTS
+WHERE NAME IN ('Milk', 'Yogurt')
+GROUP BY CART_ID
+HAVING COUNT(DISTINCT NAME) = 2
+ORDER BY CART_ID;
+```
+
+### 작성한 쿼리4: 성능 좋은 쿼리(2)
+```sql
+SELECT CART_ID
+FROM CART_PRODUCTS
+WHERE NAME REGEXP '^Milk$|^Yogurt$' -- 정규표현식 사용
+GROUP BY CART_ID
+HAVING COUNT(DISTINCT NAME) = 2
+ORDER BY CART_ID;
+```
+
+## 문제2: 언어별 개발자 분류하기
+> GROUP_CONCAT()
+
+### 요구사항
+각 개발자가 보유한 기술 목록과 기술 카테고리를 요약하여 출력하는 쿼리를 작성해주세요.
+
+### 작성한 쿼리
+```sql
+SELECT
+    ID,
+    EMAIL,
+    GROUP_CONCAT(S.NAME) AS NAME,
+    GROUP_CONCAT(S.CATEGORY) AS CATEGORY
+FROM SKILLCODES AS S
+JOIN DEVELOPERS AS D
+ON (S.CODE & D.SKILL_CODE)=S.CODE
+GROUP BY ID, EMAIL
+```
+
+## 문제3: 입양 시각 구하기(2)
+> WITH RECURSIVE
+
+### 요구사항
+보호소에서는 몇 시에 입양이 가장 활발하게 일어나는지 알아보려 합니다. 0시부터 23시까지, 각 시간대별로 입양이 몇 건이나 발생했는지 조회하는 SQL문을 작성해주세요. 이때 결과는 시간대 순으로 정렬해야 합니다.
+
+### 작성한 쿼리
+```sql
+WITH RECURSIVE T AS (
+    SELECT 0 AS HOUR
+    UNION
+    SELECT HOUR+1 FROM T WHERE HOUR<23)
+    
+SELECT 
+    T.HOUR,
+    COALESCE(COUNT(A.DATETIME), 0) AS COUNT
+FROM T
+LEFT JOIN ANIMAL_OUTS A
+ON T.HOUR = HOUR(A.DATETIME)
+GROUP BY T.HOUR
+ORDER BY T.HOUR;
+```
