@@ -96,8 +96,8 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 ## 14.12 Bit Functions and Operators
 
 ### 1. Bitwise Operators
-| Operator | Name        | Description                           |                                |
-| -------- | ----------- | ------------------------------------- | ------------------------------ |
+| Operator | Name        | Description                           |             
+| -------- | ----------- | ------------------------------------- |
 | `&`      | AND         | 1 only if both bits are 1   |                                |
 |\|         | OR                     | 1 if either bit is 1 |
 | `^`      | XOR         | 1 if the bits are different |                                |
@@ -125,3 +125,23 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 | `BIT_OR(expr)`  | Performs bitwise OR across a group  |
 | `BIT_XOR(expr)` | Performs bitwise XOR across a group |
 
+**Example:**
+| Function                | Explanation                           | Result |
+| ----------------------- | ------------------------------------- | ------ |
+| `BIT_COUNT(13)`  | `13 = 1101`<br> → number of 1 bits = 3 | 3      |
+| `BIT_AND(15, 7)` | Group-wise AND:<br> `1111 & 0111 = 0111` = 7 | 7    |
+| `BIT_OR(12, 5)`  | Group-wise OR:<br> `1100 \| 0101 = 1101` = 13 | 13   |
+| `BIT_XOR(9, 5)`  | Group-wise XOR:<br> `1001 ^ 0101 = 1100` = 12 | 12   |
+
+# 문제 풀이하기
+
+## 문제1: 서울에 위치한 식당 목록 출력하기
+> 정규표현식
+
+### 요구사항
+REST_INFO와 REST_REVIEW 테이블에서 서울에 위치한 식당들의 식당 ID, 식당 이름, 음식 종류, 즐겨찾기수, 주소, 리뷰 평균 점수를 조회하는 SQL문을 작성해주세요. 이때 리뷰 평균점수는 소수점 세 번째 자리에서 반올림 해주시고 결과는 평균점수를 기준으로 내림차순 정렬해주시고, 평균점수가 같다면 즐겨찾기수를 기준으로 내림차순 정렬해주세요.
+
+### 작성한 쿼리1
+```sql
+
+```
