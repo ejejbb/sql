@@ -100,3 +100,36 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
   - Parentheses: `'\\('`, `'\\)'`
   - Square brackets: `'\\['`
   - Special characters like `+`, `*`, `.`: `'1\\+2'`
+
+
+## 14.12 Bit Functions and Operators
+
+### 1. Bitwise Operators
+| Operator | Name        | Description                           |                                |
+| -------- | ----------- | ------------------------------------- | ------------------------------ |
+| `&`      | AND         | 1 only if both bits are 1   |                                |
+|\|         | OR                                    | 1 if either bit is 1 |
+| `^`      | XOR         | 1 if the bits are different |                                |
+| `~`      | NOT         | Inverts each bit                      |                                |
+| `<<`     | Left Shift  | Shifts bits to the left               |                                |
+| `>>`     | Right Shift | Shifts bits to the right              |                                |
+
+**Example:**
+| Expression | Explanation               | Result |
+| ---------- | ------------------------- | ------ |
+| `6 & 3`    | 110 & 011 = 010           | 2      |
+| `6 \| 3`   | 110 \| 011 = 111          | 7      |
+| `6 ^ 3`    | 110 ^ 011 = 101           | 5      |
+| `~6`       | Inverts bits (binary NOT)<br> 110 → 001 (x)<br> 컴퓨터는 64비트 기준으로 계산하므로<br> ~6 = 11...11111001<br> 2의 보수법에서 `~x == -x - 1` | -7     |
+| `6 << 1`   | 00000110 → 00001100<br> `x << n == x × 2ⁿ`       | 12     |
+| `6 >> 1`   | 00000110 → 00000011<br> `x << n == x ÷ 2ⁿ`       | 3      |
+
+
+### 2. Bitwise Aggregate Functions
+
+| Function        | Description                         |
+| --------------- | ----------------------------------- |
+| `BIT_COUNT(N)`  | Returns the number of 1 bits in N   |
+| `BIT_AND(expr)` | Performs bitwise AND across a group |
+| `BIT_OR(expr)`  | Performs bitwise OR across a group  |
+| `BIT_XOR(expr)` | Performs bitwise XOR across a group |
