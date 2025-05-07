@@ -93,26 +93,17 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+');       -- abc
 SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 ```
 
-### 8. Escaping Special Characters
-> treating characters that have special meaning as **literal characters** by using a **backslash**.
-
-- Use double backslashes (`\\`) to escape characters:
-  - Parentheses: `'\\('`, `'\\)'`
-  - Square brackets: `'\\['`
-  - Special characters like `+`, `*`, `.`: `'1\\+2'`
-
-
 ## 14.12 Bit Functions and Operators
 
 ### 1. Bitwise Operators
 | Operator | Name        | Description                           |                                |
 | -------- | ----------- | ------------------------------------- | ------------------------------ |
 | `&`      | AND         | 1 only if both bits are 1   |                                |
-|\|         | OR                                    | 1 if either bit is 1 |
+|\|         | OR                     | 1 if either bit is 1 |
 | `^`      | XOR         | 1 if the bits are different |                                |
-| `~`      | NOT         | Inverts each bit                      |                                |
-| `<<`     | Left Shift  | Shifts bits to the left               |                                |
-| `>>`     | Right Shift | Shifts bits to the right              |                                |
+| `~`      | NOT         | Inverts each bit                      |                          
+| `<<`     | Left Shift  | Shifts bits to the left               |                               
+| `>>`     | Right Shift | Shifts bits to the right              |                               
 
 **Example:**
 | Expression | Explanation               | Result |
@@ -133,3 +124,4 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 | `BIT_AND(expr)` | Performs bitwise AND across a group |
 | `BIT_OR(expr)`  | Performs bitwise OR across a group  |
 | `BIT_XOR(expr)` | Performs bitwise XOR across a group |
+
