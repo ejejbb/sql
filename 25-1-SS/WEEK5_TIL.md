@@ -23,7 +23,7 @@
 | `a{3}` / `a{1,3}` | Exactly 3 times / between 1 and 3 times |
 | `[abc]` / `[^abc]` | One of a, b, c / None of a, b, c |
 | `[a-z]` | Character range |
-| `|` | OR condition (`abc|def`) |
+| `abc\|def` | OR condition |
 | `(abc)*` | Repeat group |
 | `[:digit:]` | Digit class (recommend using `[0-9]` for performance) |
 
@@ -89,7 +89,7 @@ SELECT REGEXP_REPLACE('abc def ghi', '[a-z]+', 'X'); -- X X X
 > Returns the matched substring
 
 ```sql
-SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+');       -- abc
+SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+'); -- abc
 SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 ```
 
@@ -141,7 +141,33 @@ SELECT REGEXP_SUBSTR('abc def ghi', '[a-z]+', 1, 3); -- ghi
 ### 요구사항
 REST_INFO와 REST_REVIEW 테이블에서 서울에 위치한 식당들의 식당 ID, 식당 이름, 음식 종류, 즐겨찾기수, 주소, 리뷰 평균 점수를 조회하는 SQL문을 작성해주세요. 이때 리뷰 평균점수는 소수점 세 번째 자리에서 반올림 해주시고 결과는 평균점수를 기준으로 내림차순 정렬해주시고, 평균점수가 같다면 즐겨찾기수를 기준으로 내림차순 정렬해주세요.
 
-### 작성한 쿼리1
+### 작성한 쿼리
+ADDRESS를 출력하면 서울시, 서울특별시 모두 있는 것을 확인할 수 있으므로 '서울(특별)?시'를 사용
+```sql
+SELECT
+    I.REST_ID,
+    REST_NAME,
+    FOOD_TYPE,
+    FAVORITES,
+    ADDRESS,
+    ROUND(AVG(REVIEW_SCORE),2) AS SCORE
+FROM REST_INFO AS I
+JOIN REST_REVIEW AS R
+USING (REST_ID)
+WHERE ADDRESS REGEXP '서울(특별)?시'
+GROUP BY I.REST_ID
+ORDER BY
+    SCORE DESC,
+    FAVORITES DESC;
+```
+
+## 문제2: 부모의 형질을 모두 가지는 대장균 찾기
+> 비트연산자
+
+### 요구사항
+부모의 형질을 모두 보유한 대장균의 ID(ID), 대장균의 형질(GENOTYPE), 부모 대장균의 형질(PARENT_GENOTYPE)을 출력하는 SQL 문을 작성해주세요. 이때 결과는 ID에 대해 오름차순 정렬해주세요.
+
+### 작성한 쿼리
 ```sql
 
 ```
