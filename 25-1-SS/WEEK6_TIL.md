@@ -24,8 +24,10 @@
 ```sql
 SELECT name
 FROM athletes AS A
-JOIN records AS R ON A.id = R.athlete_id
-JOIN games AS G ON R.game_id = G.id
+JOIN records AS R
+    ON A.id = R.athlete_id
+JOIN games AS G
+    ON R.game_id = G.id
 WHERE G.year >= 2000
     AND R.medal IS NOT NULL
 GROUP BY R.athlete_id
@@ -40,5 +42,34 @@ ORDER BY name;
 
 ### 작성한 쿼리
 ```sql
+SELECT
+  substr(order_date, 1, 7) order_month,
+  sum(CASE WHEN i.order_id NOT LIKE 'C%' THEN price * quantity ELSE 0 END) ordered_amount,
+  sum(CASE WHEN i.order_id LIKE 'C%' THEN price * quantity ELSE 0 END) canceled_amount,
+  sum(price * quantity) total_amount
+FROM order_items i
+LEFT JOIN orders o ON i.order_id = o.order_id
+GROUP BY 1
+ORDER BY 1;
+```
 
+## 문제3: 세 명이 서로 친구인 관계 찾기
+
+### 요구사항
+주어진 데이터를 활용해 ID가 3820인 사용자를 포함해 세 명의 사용자가 친구 관계인 경우를 모두 출력하는 쿼리를 작성해주세요. 쿼리 결과에는 아래 컬럼이 포함되어 있어야 합니다.
+
+### 작성한 쿼리
+```sql
+SELECT
+  A.user_a_id "user_a_id",
+  B.user_a_id "user_b_id",
+  B.user_b_id "user_c_id"
+FROM
+  edges A
+  JOIN edges B ON A.user_b_id = B.user_a_id
+  JOIN edges C ON A.user_a_id = C.user_a_id AND B.user_b_id = C.user_b_id
+WHERE
+  A.user_a_id = 3820
+  OR B.user_a_id = 3820
+  OR B.user_b_id = 3820;
 ```
